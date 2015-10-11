@@ -1,0 +1,56 @@
+---
+layout: post
+title: Setting compiler flags in Cocoapods
+tags:
+- cocoapods
+- xcode
+- xcodeproj
+- pbxproj
+- compiler flags
+- swift flags
+- other swift flags
+- flags
+
+---
+
+Lately I've been working on a Swift framework that I'm pulling into an existing app with CocoaPods. The framework relies on an `#if DEBUG` macro to run one of two code paths, depending on whether we're building with the `Debug` configuration or something else.
+
+~~~swift
+public var baseURL: NSURL {
+    #if DEBUG
+        return NSURL(string:"https://coolapp-staging.herokuapp.com")!
+    #else
+        return NSURL(string:"https://www.coolapp.com")!
+    #endif
+}
+~~~
+
+In order for the compiler to hit the `#if DEBUG` branch, we need to set a `-DDEBUG` flag in the `other Swift flags` section of our target's build settings.
+
+![Target build settings](/assets/target-build-settings.jpg)
+
+So far so good -- we can see that the `#if DEBUG` branch runs when we build for `Debug` and the `#else` branch otherwise. But that changes when we begin consuming our framework in another project. Firstly, *CocoaPods doesn't look at our library's Xcode settings when it builds the project.* The project file it generates is entirely independent from Xcode's. (Thanks to Caleb Davenport at North for pointing this out.) This means that even if we specify our `-DDEBUG` flag for the `Debug` build configuration in our *library's* build settings, they won't be there when CocoaPods installs the framework into our app project.
+
+So let's set the flag higher up, say in our app target's build settings. Well it turns out that those flags don't trickle down to our framework targets at compile time. Any flags you set on the app target only affect it.
+
+OK, Different idea -- let's specify the changes to our project file in our podspec, using `[pod_target_xcconfig](https://guides.cocoapods.org/syntax/podspec.html#tab_pod_target_xcconfig)`? Unfortunately, it doesn't seem possible to set flags for a `Debug` configuration and not a `Release` one. And furthermore, we don't want to be beholden to the consumer of our API --- what if they're using a different naming convention for their build configurations?
+
+In the end, I turned to CocoaPods's `[post_install_hooks](https://guides.cocoapods.org/syntax/podfile.html#tab_post_install)`. As you can see in the docs, each target holds an array of `build_configurations`, and each of those configuration holds a hash of `build_settings`. We can just write out the relevant flags for the configurations we care about.
+
+~~~swift
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        if target.name == 'CoolFramework'
+            target.build_configurations.each do |config|
+                if config.name == 'Debug'
+                    config.build_settings['OTHER_SWIFT_FLAGS'] = '-DDEBUG'
+                    else
+                    config.build_settings['OTHER_SWIFT_FLAGS'] = ''
+                end
+            end
+        end
+    end
+end
+~~~
+
+Bong bong.
