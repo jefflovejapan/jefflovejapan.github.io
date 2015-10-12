@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Setting compiler flags in Cocoapods
+title: Setting Swift compiler flags in CocoaPods
 tags:
 - cocoapods
 - xcode
@@ -10,6 +10,7 @@ tags:
 - swift flags
 - other swift flags
 - flags
+- swift macros
 
 ---
 
