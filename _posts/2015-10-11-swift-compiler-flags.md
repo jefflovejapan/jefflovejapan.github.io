@@ -34,9 +34,9 @@ So far so good -- we can see that the `#if DEBUG` branch runs when we build for 
 
 So let's set the flag higher up, say in our app target's build settings. Well it turns out that those flags don't trickle down to our framework targets at compile time. Any flags you set on the app target only apply to the app target.
 
-OK, different idea -- why don't we specify the changes to our project file in our podspec, using `[pod_target_xcconfig](https://guides.cocoapods.org/syntax/podspec.html#tab_pod_target_xcconfig)`? Unfortunately, it doesn't seem possible to set flags for a `Debug` configuration and not a `Release` one. And furthermore, we don't want to be beholden to the consumer of our API --- what if they're using a different naming convention for their build configurations?
+OK, different idea -- why don't we specify the changes to our project file in our podspec, using [`pod_target_xcconfig`](https://guides.cocoapods.org/syntax/podspec.html#tab_pod_target_xcconfig)? Unfortunately, it doesn't seem possible to set flags for a `Debug` configuration and not a `Release` one. And furthermore, we don't want to be beholden to the consumer of our API --- what if they're using a different naming convention for their build configurations?
 
-Fortunately, we can use CocoaPods's `[post_install_hooks](https://guides.cocoapods.org/syntax/podfile.html#tab_post_install)`. As you can see in the docs, each target holds an array of `build_configurations`, and each of those configurations holds a hash of `build_settings`. We can just write out the relevant flags for the configurations we care about.
+Fortunately, we can use CocoaPods's [`post_install_hooks`](https://guides.cocoapods.org/syntax/podfile.html#tab_post_install). As you can see in the docs, each target holds an array of `build_configurations`, and each of those configurations holds a hash of `build_settings`. We can just write out the relevant flags for the configurations we care about.
 
 ~~~ruby
 post_install do |installer|
