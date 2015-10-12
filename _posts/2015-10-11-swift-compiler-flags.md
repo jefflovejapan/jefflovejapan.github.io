@@ -38,7 +38,7 @@ OK, different idea -- why don't we specify the changes to our project file in ou
 
 Fortunately, we can use CocoaPods's `[post_install_hooks](https://guides.cocoapods.org/syntax/podfile.html#tab_post_install)`. As you can see in the docs, each target holds an array of `build_configurations`, and each of those configurations holds a hash of `build_settings`. We can just write out the relevant flags for the configurations we care about.
 
-~~~swift
+~~~ruby
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         if target.name == 'CoolFramework'
@@ -55,3 +55,4 @@ end
 ~~~
 
 Bong bong.
+
