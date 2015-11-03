@@ -21,7 +21,7 @@ public var baseURL: NSURL {
     #if DEBUG
         return NSURL(string:"https://coolapp-staging.herokuapp.com")!
     #else
-        return NSURL(string:"https://www.coolapp.com")!
+        return NSURL(string:"https://coolapp.com")!
     #endif
 }
 ~~~
