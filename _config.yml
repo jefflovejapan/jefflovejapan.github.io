@@ -12,7 +12,7 @@ title:            Marginal Futility
 tagline:          'My favorite color is math'
 description:      'Thoughts on Swift and other good stuff.'
 url:              http://marginalfutility.net
-baseurl:          /
+baseurl:          ""
 
 author:
   name:           'Jeff Blagdon'
