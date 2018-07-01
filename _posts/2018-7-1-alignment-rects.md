@@ -8,7 +8,7 @@ Recently I had to build a layout with a horizontal array of NSButtons that are a
 
 ![Default Layout](/assets/default-layout.jpeg)
 
-As you can see, the star button's frame is centered with the frames of the plus and minus buttons, which isn't what we want. I remembered having seen references to alignment rects in a WWDC session, and after [tracking it down](https://developer.apple.com/videos/play/wwdc2015-218/?time=2161) on [ASCIIwwdc](asciiwwdc.com), I learned that you could use your view's alignment rect to describe the *region that contains its content,* which might be different from your view's frame if you have ornamentation like a drop shadow or, in my case, an indicator view. After double checking the docs I realized that I either needed to:
+As you can see, the star button's frame is centered with the frames of the plus and minus buttons, which isn't what we want. I remembered having seen references to alignment rects in a WWDC session, and after [tracking it down](https://developer.apple.com/videos/play/wwdc2015-218/?time=2161) on [ASCIIwwdc](asciiwwdc.com), I learned that you could use your view's alignment rect to describe the *region that contains its content.* That region might be different from your view's frame if you have ornamentation like a drop shadow or, in my case, an indicator view. After double checking the docs I realized that I either needed to:
 
 - override `alignmentRect(forFrame:)` and `frame(forAlignmentRect:)` (which should be inverses of each other) or
 - override `alignmentRectInsets`
