@@ -15,6 +15,34 @@ As you can see, the star button's frame is centered with the frames of the plus 
 
 This led to a number of hours frustratedly banging my head against my desk. Here's what I was doing:
 
+~~~swift
+class StarButton: NSControl {
+    ...
+
+    enum Metric {
+        static let imageHeight: CGFloat = 22
+        static let imageWidth = imageHeight
+        static let frameHeight: CGFloat = 30
+    }
+
+    private func configureViews() {
+        for subview in [imageView, indicatorView] {
+            subview.translatesAutoresizingMaskIntoConstraints = false
+            subview.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+            subview.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+            addSubview(subview)
+        }
+        imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: Metric.imageHeight).isActive = true
+        indicatorView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+    }
+
+    override var intrinsicContentSize: NSSize {
+        return NSSize(width: Metric.imageWidth, height: Metric.frameHeight)
+    }
+}
+~~~
+
 - The star button has two child views - an image view for the star, and the indicator view below
 - Constraints for the image view pinned it to the top, left, and right of its superview, as well as constraining its height.
 - Constraints for the indicator view pin it to the bottom, left, and right of the superview
@@ -22,10 +50,40 @@ This led to a number of hours frustratedly banging my head against my desk. Here
 
 From here I tried both of the approaches above -- first overriding `alignmentRectInsets` and returning `NSEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)` (since 8 points is the difference between the view's frame height -- 30 points -- and the height of the image view -- 22 points.) This didn't do what I wanted at all. Neither did overriding the `alignmentRect(forFrame:)` and `frame(forAlignmentRect:)`. I also experimented with getting rid of the `intrinsicContentSize` override and using explicit width and height constraints (22 x 30) but results were the same.
 
-It wasn't until I stumbled across an article on [objc.io](https://www.objc.io/issues/3-views/advanced-auto-layout-toolbox/#frame-vs-alignment-rect) that I spotted the missing piece of the puzzle, that the *intrinsic content size of a view refers to its alignment rect, not to its frame.* In order to get the layout I wanted I needed to:
+It wasn't until I stumbled across an article on [objc.io](https://www.objc.io/issues/3-views/advanced-auto-layout-toolbox/#frame-vs-alignment-rect) that I spotted the missing piece of the puzzle, namely that the **"intrinsic content size of a view refers to its alignment rect, not to its frame."**
 
-- Constrain the top, left, right, *and bottom* of the image view to its superview
-- Constrain the bottom of the indicator view to the bottom of the image view, offset by 8 points. Since the image view is constrained to superview's bottom, this is effectively constraining the indicator view to be "outside of the superview."
+In order to get the layout I wanted I needed to:
+
+~~~swift
+class StarButton: NSControl {
+    ...
+
+    private func configure() {
+        for subview in [imageView, indicatorView] {
+            subview.translatesAutoresizingMaskIntoConstraints = false
+            subview.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+            subview.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+            addSubview(subview)
+        }
+        imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true    // self.bottomAnchor now describes the bottom of the *alignment rect*
+        indicatorView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(Metric.frameHeight - Metric.imageHeight) // indicatorView now constrained to be outside the alignment rect
+    }
+
+    override var intrinsicContentSize: NSSize {
+        return NSSize(width: Metric.imageWidth, height: Metric.imageHeight) // size of the alignment rect, not the view's frame
+    }
+
+    override var alignmentRectInsets: NSEdgeInsets {
+        var insets = NSEdgeInsetsZero
+        insets.bottom = Metric.frameHeight - Metric.imageHeight
+        return insets
+    }
+}
+~~~
+
+- Constrain the top, left, right, *and bottom* of the image view to its superview. Since we're supplying an alignment rect that's different from the view's frame, we're really constraining the bottom of the image view to *the bottom of the alignment rect.*
+- Constrain the bottom of the indicator view to the bottom of the image view, offset by 8 points. Since the image view is constrained to superview's bottom, this is effectively constraining the indicator view to be "outside of the superview" (i.e., outside its alignment rect.)
 - In `intrinsicContentSize` return the desired *alignment rect size* of 22 x 22 points
 - Return `bottom: 8` as before in `alignmentRectInsets`
 
