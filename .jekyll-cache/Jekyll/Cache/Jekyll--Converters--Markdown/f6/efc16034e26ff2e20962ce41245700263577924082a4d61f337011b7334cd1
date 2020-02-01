@@ -1,0 +1,41 @@
+I"�<p>Lately I’ve been working on a Swift framework that I’m integrating into an existing app with CocoaPods. The framework relies on an <code class="highlighter-rouge">#if DEBUG</code> macro to run one of two code paths, depending on whether we’re building with the <code class="highlighter-rouge">Debug</code> configuration or something else.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">baseURL</span><span class="p">:</span> <span class="kt">NSURL</span> <span class="p">{</span>
+    <span class="cp">#if DEBUG</span>
+        <span class="k">return</span> <span class="kt">NSURL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span><span class="s">"https://coolapp-staging.herokuapp.com"</span><span class="p">)</span><span class="o">!</span>
+    <span class="cp">#else</span>
+        <span class="k">return</span> <span class="kt">NSURL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span><span class="s">"https://coolapp.com"</span><span class="p">)</span><span class="o">!</span>
+    <span class="cp">#endif</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In order for our code to trigger an <code class="highlighter-rouge">#if &lt;something&gt;</code> macro, we need to set a <code class="highlighter-rouge">-D&lt;something&gt;</code> flag in the <code class="highlighter-rouge">other Swift flags</code> section of our target’s build settings. There’s nothing special about “debug” as it’s used here, we’re just creating a global variable and naming it <code class="highlighter-rouge">DEBUG</code>.</p>
+
+<p><img src="/assets/target-build-settings.jpg" alt="Target build settings" /></p>
+
+<p>So far so good – we can see that the <code class="highlighter-rouge">#if DEBUG</code> branch runs when we build with our <code class="highlighter-rouge">Debug</code> configuration and the <code class="highlighter-rouge">#else</code> branch runs otherwise. But this changes when we consume our framework in another project. Firstly, <em>CocoaPods doesn’t look at the build settings in our library’s Xcode project at all.</em> The xcconfig files that CocoaPods generates for our framework are entirely independent of the project file in our framework’s own Xcode project. (Thanks to Caleb Davenport at North for pointing this out.) This means that even if we specify a <code class="highlighter-rouge">-DDEBUG</code> flag for the <code class="highlighter-rouge">Debug</code> build configuration in our framework’s build settings, they won’t be there when CocoaPods installs the framework into our app’s workspace.</p>
+
+<p>So let’s set the flag higher up, say in our app target’s build settings. Well it turns out that those flags don’t trickle down to our framework targets at compile time. Any flags you set on the app target only apply to the app target.</p>
+
+<p>OK, different idea – why don’t we make the changes in our podspec instead, using <a href="https://guides.cocoapods.org/syntax/podspec.html#tab_pod_target_xcconfig"><code class="highlighter-rouge">pod_target_xcconfig</code></a>? Unfortunately, it doesn’t seem possible to set flags for only our <code class="highlighter-rouge">Debug</code> configuration, which is the whole point. And besides, we don’t want to be beholden to the consumer of our API — what if they’re using a different naming convention for their build configurations?</p>
+
+<p>Fortunately, we can use CocoaPods’s <a href="https://guides.cocoapods.org/syntax/podfile.html#tab_post_install"><code class="highlighter-rouge">post_install_hooks</code></a> to get what we want. As you can see in the docs, each framework target holds an array of <code class="highlighter-rouge">build_configurations</code> representing the <code class="highlighter-rouge">xcconfig</code> files generated for each of our project’s build configurations. Each of these <code class="highlighter-rouge">build_configuration</code> objects then holds a hash of <code class="highlighter-rouge">build_settings</code> representing the structured data inside the <code class="highlighter-rouge">xcconfig</code> file. Using <code class="highlighter-rouge">post_install_hooks</code> we can just write out the relevant flags for the configurations we care about.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">post_install</span> <span class="k">do</span> <span class="o">|</span><span class="n">installer</span><span class="o">|</span>
+    <span class="n">installer</span><span class="p">.</span><span class="nf">pods_project</span><span class="p">.</span><span class="nf">targets</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">target</span><span class="o">|</span>
+        <span class="k">if</span> <span class="n">target</span><span class="p">.</span><span class="nf">name</span> <span class="o">==</span> <span class="s1">'CoolFramework'</span>
+            <span class="n">target</span><span class="p">.</span><span class="nf">build_configurations</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+                <span class="k">if</span> <span class="n">config</span><span class="p">.</span><span class="nf">name</span> <span class="o">==</span> <span class="s1">'Debug'</span>
+                    <span class="n">config</span><span class="p">.</span><span class="nf">build_settings</span><span class="p">[</span><span class="s1">'OTHER_SWIFT_FLAGS'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'-DDEBUG'</span>
+                    <span class="k">else</span>
+                    <span class="n">config</span><span class="p">.</span><span class="nf">build_settings</span><span class="p">[</span><span class="s1">'OTHER_SWIFT_FLAGS'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
+                <span class="k">end</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Bong bong.</p>
+
+:ET
