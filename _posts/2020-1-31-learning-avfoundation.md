@@ -11,7 +11,7 @@ I love technical books like David Beazley's [_Python Essential Reference_](https
 - I had no idea about the atom/box structure of MP4 and QuickTime files. I wish that Apple's Atom Inspector app was updated to run on recent OSes -- please consider filing a Radar referencing [this report](https://openradar.appspot.com/radar?id=5004193051967488) if you'd like the same. Also, any recommendations for other inspection tools for MP4 and MOV?
 - The richness of metadata that MP4 and QuickTime can support is really cool. In particular, the idea that you can add dictionaries containing your own structured data to a video file.
 - How simple it is to set up AirPlay
-- How AVCaptureSession works and how you can wire different inputs and outputs up to it
+- How `AVCaptureSession` works and how you can wire different inputs and outputs up to it
 
 So what's not to like about it?
 
@@ -20,4 +20,4 @@ So what's not to like about it?
 - Reading code in the iBooks ePUB version is really bad, and pretty typical. I'd recommend a physical copy or PDF if possible.
 - I would love to have had a treatment of some higher-level ideas, like dealing with multiple timescales and performance considerations for custom video compositors.
 
-I'd definitely give it a thumbs up overall and would recommend it to people who want a broad overview of the framework. It goes pretty deep in parts (AVAssetReader/Writer, Core Animation tool, AVCaptureVideoDataOutput) and always leaves the reader with enough clues to continue digging on their own.
+I'd definitely give it a thumbs up overall and would recommend it to people who want a broad overview of the framework. It goes pretty deep in parts (`AVAssetWriter`, `AVVideoCompositionCoreAnimationTool`, `AVCaptureVideoDataOutput`) and always leaves the reader with enough clues to continue digging on their own.
