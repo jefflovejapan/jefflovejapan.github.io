@@ -4,7 +4,7 @@ title: Getting to Know Core Data and Realm
 tags: [tech book a month]
 ---
 
-Core Data has always been a weak area for me, having never worked with it professionally[^1], and I felt like I could use a refresher on Realm, too. So instead of following the plan and reading one book a month, I read three over the course of February and March:
+Core Data has always been a weak area for me. I've never worked with it professionally[^1], and even though I've worked on a big project with Realm, I felt like I could use a refresher on it, too. So instead of following the plan and reading one book a month, I read three over the course of February and March:
 
 1. [Core Data](https://www.objc.io/books/core-data/) by Florian Kugler and Daniel Eggert
 2. [Core Data by Tutorials](https://store.raywenderlich.com/products/core-data-by-tutorials) by Aaron Douglas, Matthew Morey, and Pietro Rea
@@ -12,22 +12,22 @@ Core Data has always been a weak area for me, having never worked with it profes
 
 ## How were the books?
 
-I learned a lot from all three, but I wish I'd read the Ray Wenderlich book on Core Data before reading Objc.io's. I think the Wenderlich book gives a much better introduction for people that have never touched Core Data. The Objc.io's introductory chapters are rougher, but it still provides a lot of handy functions and best practices. I'm a fan of Florian's coding style from the other books and videos and found plenty to like in it.
+I learned a lot from all three, but I wish I'd read the Ray Wenderlich one on Core Data before reading Objc.io's since it gives a much better introduction for people that have never touched Core Data. But even though the Objc.io one's introductory chapters are rougher it still supplies a lot of handy convenience functions and clearly lays out some best practices. I'm a fan of Florian's coding style from the other books and videos and found plenty to like in it.
 
-Also, unlike the Wenderlich book, the Objc.io one is really not project-based. It's more difficult to follow along with the sample code, and sometimes the explanations are worded in a way that makes me wonder whether it's a mistake or if I'm misunderstanding something they'd said earlier.
+Unlike the Wenderlich book, the Objc.io one is not really project-based. For that reason, it's more difficult to follow along with the sample code, and sometimes the explanations are worded in a way that makes me wonder whether it's a mistake or if I'm misunderstanding something they'd said earlier. I'd love to see the material get the full video series treatment as their newer books on app architecture, optimizing collections, and Swift UI.
 
-The Realm book is also from the team at Ray Wenderlich and feels very comparable to their Core Data one in terms of scope, building up the sample projects, etc. As someone who's done a decent amount of work with Realm I still learned some useful things, and wouldn't hesitate to recommend it to someone wanting to jump into Realm for the first time.
+The Realm book is also from the team at Ray Wenderlich and feels very comparable to the Core Data one in terms of scope, building up the sample projects, etc. As someone who's done a decent amount of work with Realm I still learned some useful things, and wouldn't hesitate to recommend it to someone wanting to jump into Realm for the first time.
 
-## So should I use Core Data or Realm for my project?
+## Should I use Core Data or Realm for my project?
 
 This is obviously going to depend a lot on your use case, but I'd sum up how I think about the two like this:
 
-- Core Data is like a framework for building object graph management solutions. You can control every aspect of how data moves to and from disk and how your multithreaded code behaves.
-- Realm has batteries included. There's generally one right way to do something, and there's much less that you need to understand to use it correctly.
+- Core Data is like a framework for building object graph management solutions. You can control every aspect of how data moves to and from disk, what your memory footprint looks like at any given moment, and how your multithreaded code behaves.
+- Realm has batteries included. There's generally one right way to do something, and you don't need to understand much to use it correctly in simple cases.
 
-I would reach for Core Data if I was trying to minimize my dependency on third-party libraries, or if I had a need to work with large graphs of managed objects and wanted to optimize reads and writes very tightly. To give you a sense of what I mean, executing a fetch request always involves a round-trip to disk, so you want to limit how frequently you're performing them. The data that's included in those fetch results typically contain faults -- references to other managed objects that haven't been populated yet. You determine when you want to pay for the faults to be filled. Changes that you make in the "scratchpad" (context) have to be explicitly saved to disk. You can use "subentities" if you want multiple types of managed objects to be stored together in the same database table, but these don't behave like subclasses. The list goes on.
+I would reach for Core Data if I was trying to minimize my dependency on third-party libraries, or if I had a need to work with large graphs of managed objects and wanted to optimize reads and writes very tightly. To give you a sense of what I mean, executing a fetch request always involves a round-trip to disk, so you want to limit how frequently you're performing them. The data that's included in those fetch results typically contain faults -- references to other managed objects that haven't been populated yet. You determine when you want to pay for the faults to be filled. Changes that you make in the "scratchpad" (context) have to be explicitly saved to disk. You can use "subentities" if you want multiple types of managed objects to be stored together in the same database table for performance, but these subentities don't behave like subclasses. The list goes on.
 
-I would go for Realm if I was just trying to get something up and running. Specifying a schema is as simple as inheriting from `Realm.Object` and async code is easy to understand. For example, any time you mutate a managed Realm object it needs to be in a write transaction and other parts of your code that are listening for changes are notified. In general, it seems like it's less powerful and gives you less control, but there are fewer opportunities to shoot yourself in the foot.
+I would go for Realm if I was just trying to get something up and running. Specifying a schema is as simple as inheriting from `Realm.Object` and async code is easy to understand. For example, any time you mutate a managed Realm object it needs to be in a write transaction and other parts of your code that are listening for changes are notified autmatically. In general, it seems like it's less powerful and gives you less control, but there are fewer opportunities to shoot yourself in the foot.
 
 ## Random Learnings
 
@@ -41,8 +41,8 @@ I would go for Realm if I was just trying to get something up and running. Speci
 ### Realm
 
 - Realm can be made very performant when you need to do a ton of writes, but it requires some screwing around to get a run loop installed on a background thread.
-- Realm allows reads and writes from any thread, publishing notifications on the thread they were created from. The realm and its objects can't be passed across threads.
-- Calling `Realm(configuration:)` to initialize a new realm is usually a lightweight operation because the framework will return an existing instance for this thread if one's available. In general, you shouldn't hold onto realm instances and should hold onto the configuration and initialize on the fly instead. (There's an exception when you're writing on a single dedicated _thread.)_
+- It allows reads and writes from any thread, publishing notifications on the thread they were created from. The realm and its objects can't be passed across threads.
+- Calling `Realm(configuration:)` to initialize a new realm is usually a lightweight operation because the framework will return an existing instance for the current thread if one's available. In general, you shouldn't hold onto realm instances and should hold onto the configuration and initialize on the fly instead. (There's an exception when you're writing to a single dedicated _thread.)_
 - By default, adding an object to a realm where another object of the same type shares its primary key will error instead of applying the changes.
 - It's very simple to set up Realm Cloud, at least with their PaaS (not sure about self hosting.)
 
