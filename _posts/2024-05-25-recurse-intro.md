@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Back to the Recurse Center
+title: Never Graduate
 tags: [recurse center]
 ---
 
