@@ -1,12 +1,12 @@
-I"m8<p>Recently I had to build a layout with a horizontal array of NSButtons that are all vertically centered. The tricky part was that one of the buttons needed an indicator view to represent its control state (present for <code class="highlighter-rouge">.on</code>, hidden for <code class="highlighter-rouge">.off</code>.) Using typical constraints produced a layout like this:</p>
+I"�9<p>Recently I had to build a layout with a horizontal array of NSButtons that are all vertically centered. The tricky part was that one of the buttons needed an indicator view to represent its control state (present for <code class="language-plaintext highlighter-rouge">.on</code>, hidden for <code class="language-plaintext highlighter-rouge">.off</code>.) Using typical constraints produced a layout like this:</p>
 
 <p><img src="/assets/default-layout.jpeg" alt="Default Layout" /></p>
 
 <p>As you can see, the star button’s frame is centered with the frames of the plus and minus buttons, which isn’t what we want. I remembered having seen references to alignment rects in a WWDC session, and after <a href="https://developer.apple.com/videos/play/wwdc2015-218/?time=2161">tracking it down</a> on <a href="asciiwwdc.com">ASCIIwwdc</a>, I learned that you could use your view’s alignment rect to describe the <em>region that contains its content.</em> That region might be different from your view’s frame if you have ornamentation like a drop shadow or, in my case, an indicator view. After double checking the docs I realized that I either needed to:</p>
 
 <ul>
-  <li>override <code class="highlighter-rouge">alignmentRect(forFrame:)</code> and <code class="highlighter-rouge">frame(forAlignmentRect:)</code> (which should be inverses of each other) or</li>
-  <li>override <code class="highlighter-rouge">alignmentRectInsets</code></li>
+  <li>override <code class="language-plaintext highlighter-rouge">alignmentRect(forFrame:)</code> and <code class="language-plaintext highlighter-rouge">frame(forAlignmentRect:)</code> (which should be inverses of each other) or</li>
+  <li>override <code class="language-plaintext highlighter-rouge">alignmentRectInsets</code></li>
 </ul>
 
 <p>This led to a number of hours frustratedly banging my head against my desk. Here’s what I was doing:</p>
@@ -42,10 +42,10 @@
   <li>The star button has two child views - an image view for the star, and the indicator view below</li>
   <li>Constraints for the image view pinned it to the top, left, and right of its superview, as well as constraining its height.</li>
   <li>Constraints for the indicator view pin it to the bottom, left, and right of the superview</li>
-  <li>Override <code class="highlighter-rouge">intrinsicContentSize</code> for the button and return its full size of 22 x 30 points</li>
+  <li>Override <code class="language-plaintext highlighter-rouge">intrinsicContentSize</code> for the button and return its full size of 22 x 30 points</li>
 </ul>
 
-<p>From here I tried both of the approaches above – first overriding <code class="highlighter-rouge">alignmentRectInsets</code> and returning <code class="highlighter-rouge">NSEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)</code> (since 8 points is the difference between the view’s frame height – 30 points – and the height of the image view – 22 points.) This didn’t do what I wanted at all. Neither did overriding the <code class="highlighter-rouge">alignmentRect(forFrame:)</code> and <code class="highlighter-rouge">frame(forAlignmentRect:)</code>. I also experimented with getting rid of the <code class="highlighter-rouge">intrinsicContentSize</code> override and using explicit width and height constraints (22 x 30) but results were the same.</p>
+<p>From here I tried both of the approaches above – first overriding <code class="language-plaintext highlighter-rouge">alignmentRectInsets</code> and returning <code class="language-plaintext highlighter-rouge">NSEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)</code> (since 8 points is the difference between the view’s frame height – 30 points – and the height of the image view – 22 points.) This didn’t do what I wanted at all. Neither did overriding the <code class="language-plaintext highlighter-rouge">alignmentRect(forFrame:)</code> and <code class="language-plaintext highlighter-rouge">frame(forAlignmentRect:)</code>. I also experimented with getting rid of the <code class="language-plaintext highlighter-rouge">intrinsicContentSize</code> override and using explicit width and height constraints (22 x 30) but results were the same.</p>
 
 <p>It wasn’t until I stumbled across an article on <a href="https://www.objc.io/issues/3-views/advanced-auto-layout-toolbox/#frame-vs-alignment-rect">objc.io</a> that I spotted the missing piece of the puzzle, namely that the <strong>“intrinsic content size of a view refers to its alignment rect, not to its frame.”</strong></p>
 
@@ -81,8 +81,8 @@
 <ul>
   <li>Constrain the top, left, right, <em>and bottom</em> of the image view to its superview. Since we’re supplying an alignment rect that’s different from the view’s frame, we’re really constraining the bottom of the image view to <em>the bottom of the alignment rect.</em></li>
   <li>Constrain the bottom of the indicator view to the bottom of the image view, offset by 8 points. Since the image view is constrained to superview’s bottom, this is effectively constraining the indicator view to be “outside of the superview” (i.e., outside its alignment rect.)</li>
-  <li>In <code class="highlighter-rouge">intrinsicContentSize</code> return the desired <em>alignment rect size</em> of 22 x 22 points</li>
-  <li>Return <code class="highlighter-rouge">bottom: 8</code> as before in <code class="highlighter-rouge">alignmentRectInsets</code></li>
+  <li>In <code class="language-plaintext highlighter-rouge">intrinsicContentSize</code> return the desired <em>alignment rect size</em> of 22 x 22 points</li>
+  <li>Return <code class="language-plaintext highlighter-rouge">bottom: 8</code> as before in <code class="language-plaintext highlighter-rouge">alignmentRectInsets</code></li>
 </ul>
 
 <p><img src="/assets/layout-good.jpeg" alt="Correct Layout" /></p>
@@ -91,7 +91,7 @@
 
 <ul>
   <li>When you’re setting up layout constraints for a view whose alignment rect you want to manipulate, you should think of constraining to your superview’s edges as <em>constraining to the edges of the alignment rect instead</em></li>
-  <li><code class="highlighter-rouge">intrinsicContentSize</code> or explicit width and height constraints should describe the <em>width and height of the alignment rect</em>, not the width and height of your view’s frame</li>
-  <li>Overriding <code class="highlighter-rouge">alignmentRectInsets</code> is easier than messing with <code class="highlighter-rouge">alignmentRect(forFrame:)</code> and <code class="highlighter-rouge">frame(forAlignmentRect:)</code></li>
+  <li><code class="language-plaintext highlighter-rouge">intrinsicContentSize</code> or explicit width and height constraints should describe the <em>width and height of the alignment rect</em>, not the width and height of your view’s frame</li>
+  <li>Overriding <code class="language-plaintext highlighter-rouge">alignmentRectInsets</code> is easier than messing with <code class="language-plaintext highlighter-rouge">alignmentRect(forFrame:)</code> and <code class="language-plaintext highlighter-rouge">frame(forAlignmentRect:)</code></li>
 </ul>
 :ET
