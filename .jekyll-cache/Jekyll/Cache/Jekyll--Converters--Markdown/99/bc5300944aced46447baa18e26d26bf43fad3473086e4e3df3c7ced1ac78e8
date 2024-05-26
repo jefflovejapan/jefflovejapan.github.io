@@ -1,10 +1,10 @@
-I"?Q<p><a href="http://github.com/moya/moya">Moya</a> is functional networking library, built on top of <a href="https://github.com/Alamofire/Alamofire">Alamofire</a>, that applies the best of Swift’s language and compiler features to your network requests. Its key insight is tying URL request-building logic to an enumerated type, both guaranteeing that you don’t miss anything (<code class="highlighter-rouge">switch</code> statements need to be exhaustive), and allowing you to cleanly factor code out of your main suite of public “call this endpoint” functions. On top of that, there are subspecs supporting both <a href="https://github.com/Moya/Moya">ReactiveCocoa</a> and <a href="https://github.com/ReactiveX/RxSwift">RxSwift</a>, making it relatively easy to support <a href="https://realm.io/news/altconf-ash-furrow-functional-reactive-swift/">functional reactive programming</a> in your project.</p>
+I"�R<p><a href="http://github.com/moya/moya">Moya</a> is functional networking library, built on top of <a href="https://github.com/Alamofire/Alamofire">Alamofire</a>, that applies the best of Swift’s language and compiler features to your network requests. Its key insight is tying URL request-building logic to an enumerated type, both guaranteeing that you don’t miss anything (<code class="language-plaintext highlighter-rouge">switch</code> statements need to be exhaustive), and allowing you to cleanly factor code out of your main suite of public “call this endpoint” functions. On top of that, there are subspecs supporting both <a href="https://github.com/Moya/Moya">ReactiveCocoa</a> and <a href="https://github.com/ReactiveX/RxSwift">RxSwift</a>, making it relatively easy to support <a href="https://realm.io/news/altconf-ash-furrow-functional-reactive-swift/">functional reactive programming</a> in your project.</p>
 
 <h2 id="whats-in-the-box">What’s in the Box?</h2>
 
 <h3 id="target">Target</h3>
 
-<p>At its heart, Moya revolves around a single protocol called <code class="highlighter-rouge">MoyaTarget</code>. This is the enumerated type alluded to earlier, and encompasses your base URL and paths, supplied parameters, and HTTP methods. Let’s use the <a href="https://dev.twitter.com/rest/public">Twitter API</a> for this example, and call our implementation <code class="highlighter-rouge">TwitterTarget</code>.</p>
+<p>At its heart, Moya revolves around a single protocol called <code class="language-plaintext highlighter-rouge">MoyaTarget</code>. This is the enumerated type alluded to earlier, and encompasses your base URL and paths, supplied parameters, and HTTP methods. Let’s use the <a href="https://dev.twitter.com/rest/public">Twitter API</a> for this example, and call our implementation <code class="language-plaintext highlighter-rouge">TwitterTarget</code>.</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Target</span><span class="p">:</span> <span class="kt">MoyaTarget</span> <span class="p">{</span>
     <span class="k">case</span> <span class="o">.</span><span class="kt">HomeTimeline</span>
@@ -43,11 +43,11 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>So for each of the protocol methods we can switch on <code class="highlighter-rouge">self</code> (enums ftw), using <code class="highlighter-rouge">let</code> bindings to pull out associated values where we need them. The only non-obvious method is <code class="highlighter-rouge">sampleData</code> — it’s related to testing, we’ll come back to it later.</p>
+<p>So for each of the protocol methods we can switch on <code class="language-plaintext highlighter-rouge">self</code> (enums ftw), using <code class="language-plaintext highlighter-rouge">let</code> bindings to pull out associated values where we need them. The only non-obvious method is <code class="language-plaintext highlighter-rouge">sampleData</code> — it’s related to testing, we’ll come back to it later.</p>
 
 <h3 id="provider">Provider</h3>
 
-<p>In order to interact with our <code class="highlighter-rouge">TwitterTarget</code> type we’ll need an instance of <code class="highlighter-rouge">MoyaProvider</code>; its <code class="highlighter-rouge">request</code> method is the gateway between <code class="highlighter-rouge">TwitterTarget</code> and Twitter’s servers. While we’re at it, let’s write a public function to wrap all of this stuff up.</p>
+<p>In order to interact with our <code class="language-plaintext highlighter-rouge">TwitterTarget</code> type we’ll need an instance of <code class="language-plaintext highlighter-rouge">MoyaProvider</code>; its <code class="language-plaintext highlighter-rouge">request</code> method is the gateway between <code class="language-plaintext highlighter-rouge">TwitterTarget</code> and Twitter’s servers. While we’re at it, let’s write a public function to wrap all of this stuff up.</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">let</span> <span class="nv">provider</span> <span class="o">=</span> <span class="kt">MoyaProvider</span><span class="o">&lt;</span><span class="kt">TwitterTarget</span><span class="o">&gt;</span><span class="p">()</span>
 
@@ -71,11 +71,11 @@
     <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Using Moya we’ve factored everything but the bare essentials out of our public <code class="highlighter-rouge">getTimeline</code> function. The resulting code is simple, safe, and easy to reason about.</p>
+<p>Using Moya we’ve factored everything but the bare essentials out of our public <code class="language-plaintext highlighter-rouge">getTimeline</code> function. The resulting code is simple, safe, and easy to reason about.</p>
 
 <h2 id="testing">Testing</h2>
 
-<p>An awesome feature of Moya is the ability to test our logic with canned API responses with just a couple of small changes to our code. First, let’s implement that <code class="highlighter-rouge">sampleData</code> method for real using the <a href="https://dev.twitter.com/rest/reference/get/statuses/home_timeline">sample responses</a> in Twitter’s API docs:</p>
+<p>An awesome feature of Moya is the ability to test our logic with canned API responses with just a couple of small changes to our code. First, let’s implement that <code class="language-plaintext highlighter-rouge">sampleData</code> method for real using the <a href="https://dev.twitter.com/rest/reference/get/statuses/home_timeline">sample responses</a> in Twitter’s API docs:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Target</span><span class="p">:</span> <span class="kt">MoyaTarget</span> <span class="p">{</span>
 
@@ -99,12 +99,12 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Now in order to use this in our tests, we’re going to need an instance of <code class="highlighter-rouge">MoyaProvider</code> that we’ve configured for testing:</p>
+<p>Now in order to use this in our tests, we’re going to need an instance of <code class="language-plaintext highlighter-rouge">MoyaProvider</code> that we’ve configured for testing:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">let</span> <span class="nv">testProvider</span> <span class="o">=</span> <span class="kt">MoyaProvider</span><span class="o">&lt;</span><span class="kt">TwitterTarget</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">endpointClosure</span><span class="p">:</span> <span class="kt">MoyaProvider</span><span class="o">.</span><span class="kt">DefaultEndpointMapping</span><span class="p">,</span> <span class="nv">endpointResolver</span><span class="p">:</span> <span class="kt">MoyaProvider</span><span class="o">.</span><span class="kt">DefaultEndpointResolution</span><span class="p">,</span> <span class="nv">stubBehavior</span><span class="p">:</span> <span class="kt">MoyaProvider</span><span class="o">.</span><span class="kt">ImmediateStubbingBehaviour</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>This is almost the default configuration we get with a new <code class="highlighter-rouge">MoyaProvider</code>, except for the <code class="highlighter-rouge">stubBehavior</code> parameter. We’re using it to tell the provider that we want to use the stubbed responses we specified above, and not actually call out to the network. Now we can write tests like this (using <a href="https://github.com/Quick/Quick">Quick</a> and <a href="https://github.com/Quick/Nimble">Nimble</a>, of course):</p>
+<p>This is almost the default configuration we get with a new <code class="language-plaintext highlighter-rouge">MoyaProvider</code>, except for the <code class="language-plaintext highlighter-rouge">stubBehavior</code> parameter. We’re using it to tell the provider that we want to use the stubbed responses we specified above, and not actually call out to the network. Now we can write tests like this (using <a href="https://github.com/Quick/Quick">Quick</a> and <a href="https://github.com/Quick/Nimble">Nimble</a>, of course):</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nf">describe</span><span class="p">(</span><span class="s">"Getting the user's home timeline"</span><span class="p">)</span> <span class="p">{</span>
         <span class="nf">it</span><span class="p">(</span><span class="s">"Should have some tweets"</span><span class="p">)</span> <span class="p">{</span>
@@ -119,7 +119,7 @@
 
 <h3 id="headers">Headers</h3>
 
-<p>In order to add custom headers (say, for authentication), you’re going to need to provide a value for the <code class="highlighter-rouge">endpointClosure</code> parameter of <code class="highlighter-rouge">MoyaProvider</code>.</p>
+<p>In order to add custom headers (say, for authentication), you’re going to need to provide a value for the <code class="language-plaintext highlighter-rouge">endpointClosure</code> parameter of <code class="language-plaintext highlighter-rouge">MoyaProvider</code>.</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="k">let</span> <span class="nv">ourEndpointClosure</span> <span class="o">=</span> <span class="p">{</span> <span class="p">(</span><span class="nv">target</span><span class="p">:</span> <span class="kt">TwitterTarget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Endpoint</span> <span class="k">in</span>
@@ -134,7 +134,7 @@
 
 <h3 id="functional-reactive-programming">Functional Reactive Programming</h3>
 
-<p>If you’d rather use signals than completion closures you can still use everything we’ve done so far, only swapping the base <code class="highlighter-rouge">MoyaProvider</code> out with <code class="highlighter-rouge">RxMoyaProvider</code> (for RxSwift) or <code class="highlighter-rouge">ReactiveCocoaMoyaProvider</code> (for Reactive Cocoa). Now the provider’s <code class="highlighter-rouge">request</code> method returns an <code class="highlighter-rouge">Observable</code> (or <code class="highlighter-rouge">Signal</code>) that you can map, filter, and bind to stuff.</p>
+<p>If you’d rather use signals than completion closures you can still use everything we’ve done so far, only swapping the base <code class="language-plaintext highlighter-rouge">MoyaProvider</code> out with <code class="language-plaintext highlighter-rouge">RxMoyaProvider</code> (for RxSwift) or <code class="language-plaintext highlighter-rouge">ReactiveCocoaMoyaProvider</code> (for Reactive Cocoa). Now the provider’s <code class="language-plaintext highlighter-rouge">request</code> method returns an <code class="language-plaintext highlighter-rouge">Observable</code> (or <code class="language-plaintext highlighter-rouge">Signal</code>) that you can map, filter, and bind to stuff.</p>
 
 <p>Happy coding!</p>
 :ET

@@ -4,7 +4,9 @@ title: Back to the Recurse Center
 tags: [recurse center]
 ---
 
-In a miracle of luck and timing, I've been afforded the opportunity to come back to the Recurse Center to focus on personal programming projects for the next six weeks (already down to five.) My plan is to blog here to keep myself accountable and to have a public document of my time at RC.
+![Default Layout](/assets/recurse-mosaic.jpeg)
+
+In a miracle of luck and timing, I've been afforded the opportunity to come back to the [Recurse Center](recurse.com) to focus on personal programming projects for the next six weeks (already down to five.) My plan is to blog here to keep myself accountable and to have a public document of my time at RC.
 
 I first came to RC (formerly called Hacker School) back in October of 2013. I was living in Japan, working as a reporter, when I happened to come across a tweet. It read something like "Love programming? Apply to Hacker School!" Clicking that link changed my life in innumerable ways, but most importantly, it gave me the opportunity to do what I love for a living -- to be able to support myself while pursuing my own interests and satisfying the analytical part of my brain that always felt unsatisfied at other jobs.
 
