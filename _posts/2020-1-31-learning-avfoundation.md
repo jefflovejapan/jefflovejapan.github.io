@@ -4,7 +4,7 @@ title: Learning AV Foundation
 tags: [tech book a month]
 ---
 
-![cover](/assets/Learning_AV_Foundation@2x.png)
+![cover]({{"/assets/Learning_AV_Foundation@2x.png" | relative_url}})
 
 Lately I've been wanting to do more learning outside work hours, so when my coworkers shared their personal goals for 2020 in Slack, I thought, "This is the year I read a technical book a month." Since I work with AVFoundation every day at [1 Second Everyday](https://1se.co), I figured what better way to start than with a book-length treatment of my favorite (?) framework, Bob McCune's [_Learning AV Foundation: A Hands-on Guide to Mastering the AV Foundation Framework_](http://www.learningavfoundation.com). At 432 pages it covers a lot of ground, with walkthroughs on media playback and capture, working with assets and metadata, and composition and editing. It starts from the very basics (how digital media is represented on disk) and works up to more complex topics -- from how to work with rational time to how to control focus and exposure on iPhone cameras, eventually building up to a multitrack editing app by the end of the book.
 

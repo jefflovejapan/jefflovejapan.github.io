@@ -28,7 +28,7 @@ public var baseURL: NSURL {
 
 In order for our code to trigger an `#if <something>` macro, we need to set a `-D<something>` flag in the `other Swift flags` section of our target's build settings. There's nothing special about "debug" as it's used here, we're just creating a global variable and naming it `DEBUG`.
 
-![Target build settings](/assets/target-build-settings.jpg)
+![Target build settings]({{"/assets/target-build-settings.jpg" | relative_url}})
 
 So far so good -- we can see that the `#if DEBUG` branch runs when we build with our `Debug` configuration and the `#else` branch runs otherwise. But this changes when we consume our framework in another project. Firstly, *CocoaPods doesn't look at the build settings in our library's Xcode project at all.* The xcconfig files that CocoaPods generates for our framework are entirely independent of the project file in our framework's own Xcode project. (Thanks to Caleb Davenport at North for pointing this out.) This means that even if we specify a `-DDEBUG` flag for the `Debug` build configuration in our framework's build settings, they won't be there when CocoaPods installs the framework into our app's workspace.
 

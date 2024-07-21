@@ -4,7 +4,7 @@ title: Never Graduate
 tags: [recurse center]
 ---
 
-![Default Layout](/assets/recurse-mosaic.jpeg)
+![Default Layout]({{"/assets/recurse-mosaic.jpeg" | relative_url}})
 
 In a miracle of luck and timing, I've been afforded the opportunity to come back to the [Recurse Center](https://recurse.com) to focus on personal programming projects for the next six weeks (already down to five.) My plan is to blog here to keep myself accountable and to have a public document of my time at RC.
 
@@ -12,7 +12,7 @@ I first came to RC (formerly Hacker School) back in October of 2013. I was livin
 
 The thing that makes RC special is that it's engineered to maximize the likelihood of making you a dramatically better programmer. Every core batch event is designed to train your focus on something just outside your current abilities; something that you might know how to start, but not know how to see through to completion. Tackling *these* kinds of projects are what RC is all about, and the work that people have produced here is mind-blowing. Just off the top of my head, a handful of presentations this week covered:
 
-- [Getting MIDI to run](https://github.com/Garrett-Bodley/midi2apple2) on an Apple //e
+- [Getting MIDI to run](https://github.com/Garrett-Bodley/midi2apple2) on an Apple IIe
 - Training a neural net on music samples so you can play it like a musical instrument
 - [A microcontroller program](https://github.com/benarnav/arrivals-board) and web app that shows subway arrival times and delays on an LED display
 

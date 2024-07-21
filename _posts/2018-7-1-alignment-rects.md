@@ -6,7 +6,7 @@ tags: autolayout intrinsiccontentsize alignmentrect alignmentrectinsets
 
 Recently I had to build a layout with a horizontal array of NSButtons that are all vertically centered. The tricky part was that one of the buttons needed an indicator view to represent its control state (present for `.on`, hidden for `.off`.) Using typical constraints produced a layout like this:
 
-![Default Layout](/assets/default-layout.jpeg)
+![Default Layout]({{"/assets/default-layout.jpeg" | relative_url}})
 
 As you can see, the star button's frame is centered with the frames of the plus and minus buttons, which isn't what we want. I remembered having seen references to alignment rects in a WWDC session, and after [tracking it down](https://developer.apple.com/videos/play/wwdc2015-218/?time=2161) on [ASCIIwwdc](asciiwwdc.com), I learned that you could use your view's alignment rect to describe the *region that contains its content.* That region might be different from your view's frame if you have ornamentation like a drop shadow or, in my case, an indicator view. After double checking the docs I realized that I either needed to:
 
@@ -87,7 +87,7 @@ class StarButton: NSControl {
 - In `intrinsicContentSize` return the desired *alignment rect size* of 22 x 22 points
 - Return `bottom: 8` as before in `alignmentRectInsets`
 
-![Correct Layout](/assets/layout-good.jpeg)
+![Correct Layout]({{"/assets/layout-good.jpeg" | relative_url}})
 
 Simple. So here's what I learned:
 
